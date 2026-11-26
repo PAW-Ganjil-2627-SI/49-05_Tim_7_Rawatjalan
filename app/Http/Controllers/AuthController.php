@@ -10,8 +10,9 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->route('obat.index');
+            return redirect()->route('home');
         }
+
         return view('auth.login');
     }
 
@@ -24,7 +25,8 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('obat.index'))
+
+            return redirect()->route('home')
                 ->with('success', 'Selamat datang, ' . Auth::user()->username . '!');
         }
 
@@ -39,6 +41,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('obat.index')->with('success', 'Anda berhasil logout.');
+        return redirect('/')->with('success', 'Anda berhasil logout.');
     }
 }

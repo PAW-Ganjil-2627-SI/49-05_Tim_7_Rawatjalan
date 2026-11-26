@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Obat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ObatController extends Controller
 {
@@ -15,11 +16,14 @@ class ObatController extends Controller
 
     public function create()
     {
+        Gate::authorize('create', Obat::class);
         return view('obat.create');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Obat::class);
+
         $data = $request->validate([
             'id_obat' => 'required|string|unique:obat,id_obat|max:50',
             'nama_obat' => 'required|string|max:255',
@@ -35,11 +39,14 @@ class ObatController extends Controller
 
     public function edit(Obat $obat)
     {
+        Gate::authorize('update', $obat);
         return view('obat.edit', compact('obat'));
     }
 
     public function update(Request $request, Obat $obat)
     {
+        Gate::authorize('update', $obat);
+
         $data = $request->validate([
             'id_obat' => 'required|string|max:50|unique:obat,id_obat,' . $obat->id,
             'nama_obat' => 'required|string|max:255',
@@ -55,6 +62,8 @@ class ObatController extends Controller
 
     public function destroy(Obat $obat)
     {
+        Gate::authorize('delete', $obat);
+
         $obat->delete();
 
         return redirect()->route('obat.index')->with('success', 'Obat berhasil dihapus.');
